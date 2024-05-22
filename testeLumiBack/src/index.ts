@@ -8,7 +8,7 @@ import { sequelize } from "./database";
 import { Cliente } from "./entities/Cliente";
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 const app: Express = express();
 
