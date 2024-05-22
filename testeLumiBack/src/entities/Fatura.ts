@@ -25,23 +25,23 @@ export class Fatura extends Model {
   @Column(DataType.DECIMAL)
   energiaEletricaVlr: number;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column
   energiaSCEEEQtd: number;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.DECIMAL)
   energiaSCEEEVlr: number;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column
   energiaCompensadaQtd: number;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.DECIMAL)
   energiaCompensadaVlr: number;
 
-  @AllowNull(false)
+  @AllowNull(true)
   @Column(DataType.DECIMAL)
   contribuicaoIluminacaoValor: number;
 

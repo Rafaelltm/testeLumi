@@ -59,6 +59,7 @@ export class ImportFaturaService {
       await this.handleFatura({ ...pdfConvertedData, faturaBase64: base64StringPdfFile });
 
     } catch (err) {
+      console.log(err);
       throw new RestError(`Ocorreu um erro ao importar dados do arquivo pdf.`, 422);
     }
   }
@@ -124,6 +125,7 @@ export class ImportFaturaService {
     try {
       const dataBuffer = fs.readFileSync(pdfPath);
       const data = await pdfParse(dataBuffer);
+
       return data.text;
     } catch (error) {
       throw new RestError("Erro ao extrair texto do PDF", 400);
@@ -133,24 +135,33 @@ export class ImportFaturaService {
   extractDataFromPdfText(pdfText: string): IPdfText {
     const data: any = {};
 
-    const valoresFaturadosMatch = pdfText.match(/Energia Elétrica.*?(\d+)\s+([\d,]+)\s+([\d,]+).*?Energia SCEE ISENTA.*?(\d+)\s+([\d,]+)\s+([\d,]+).*?Energia compensada GD I.*?(\d+)\s+([\d,]+)\s+([\d,-]+).*?Contrib Ilum Publica Municipal\s+([\d,]+).*?TOTAL\s+([\d,]+)/s);
-    if (valoresFaturadosMatch) {
-      data.valoresFaturados = {
-        energiaEletrica: {
-          quantidade: parseInt(valoresFaturadosMatch[1].replace(/\s/g, '')),
-          valor: parseFloat(valoresFaturadosMatch[3].replace(',', '.')),
-        },
-        energiaSCEEIsenta: {
-          quantidade: parseInt(valoresFaturadosMatch[4].replace(/\s/g, '')),
-          valor: parseFloat(valoresFaturadosMatch[6].replace(',', '.')),
-        },
-        energiaCompensadaGDI: {
-          quantidade: parseInt(valoresFaturadosMatch[7].replace(/\s/g, '')),
-          valor: parseFloat(valoresFaturadosMatch[9].replace(',', '.')),
-        },
-        contribuicaoIlumPublica: parseFloat(valoresFaturadosMatch[10].replace(',', '.')),
-        total: parseFloat(valoresFaturadosMatch[11].replace(',', '.')),
+    const energiaEletricaMatch = pdfText.match(/Energia Elétrica.*?(\d+)\s+([\d,]+)\s+([\d,]+).*?/);
+    if (energiaEletricaMatch) {
+      data.energiaEletrica = {
+        quantidade: parseInt(energiaEletricaMatch[1].replace(/\s/g, '')),
+        valor: parseFloat(energiaEletricaMatch[3].replace(',', '.')),
       };
+    }
+
+    const EnergiaSceeIsentaMatch = pdfText.match(/Energia SCEE ISENTA.*?(\d+)\s+([\d,]+)\s+([\d,]+).*?/);
+    if (EnergiaSceeIsentaMatch) {
+      data.energiaSCEEIsenta = {
+        quantidade: parseInt(EnergiaSceeIsentaMatch[1].replace(/\s/g, '')),
+        valor: parseFloat(EnergiaSceeIsentaMatch[3].replace(',', '.')),
+      };
+    }
+
+    const energiaCompensadaGdMatch = pdfText.match(/Energia compensada GD I.*?(\d+)\s+([\d,]+)\s+([\d,-]+).*?/);
+    if (energiaCompensadaGdMatch) {
+      data.energiaCompensadaGDI = {
+        quantidade: parseInt(energiaCompensadaGdMatch[1].replace(/\s/g, '')),
+        valor: parseFloat(energiaCompensadaGdMatch[3].replace(',', '.')),
+      };
+    }
+
+    const contribIlumPublicaMatch = pdfText.match(/Contrib Ilum Publica Municipal\s+([\d,]+).*?/);
+    if (contribIlumPublicaMatch) {
+      data.contribuicaoIlumPublica = parseFloat(contribIlumPublicaMatch[1].replace(',', '.'));
     }
 
     const clienteInstalacaoMatch = pdfText.match(/Nº DO CLIENTE\s+Nº DA INSTALAÇÃO\s+(\d+)\s+(\d+)/);
@@ -173,13 +184,13 @@ export class ImportFaturaService {
       nomeCliente: data.nomeCliente,
       mesReferencia: data.referencia.split('/')[0],
       anoReferencia: Number(data.referencia.split('/')[1]),
-      energiaEletricaQtd: Number(data.valoresFaturados.energiaEletrica.quantidade),
-      energiaEletricaVlr: Number(data.valoresFaturados.energiaEletrica.valor),
-      energiaSCEEEQtd: Number(data.valoresFaturados.energiaSCEEIsenta.quantidade),
-      energiaSCEEEVlr: Number(data.valoresFaturados.energiaSCEEIsenta.valor),
-      energiaCompensadaQtd: Number(data.valoresFaturados.energiaCompensadaGDI.quantidade),
-      energiaCompensadaVlr: Number(data.valoresFaturados.energiaCompensadaGDI.valor),
-      contribuicaoIluminacaoValor: Number(data.valoresFaturados.contribuicaoIlumPublica),
+      energiaEletricaQtd: Number(data.energiaEletrica?.quantidade) || 0,
+      energiaEletricaVlr: Number(data.energiaEletrica?.valor) || 0,
+      energiaSCEEEQtd: Number(data.energiaSCEEIsenta?.quantidade) || 0,
+      energiaSCEEEVlr: Number(data.energiaSCEEIsenta?.valor) || 0,
+      energiaCompensadaQtd: Number(data.energiaCompensadaGDI?.quantidade) || 0,
+      energiaCompensadaVlr: Number(data.energiaCompensadaGDI?.valor) || 0,
+      contribuicaoIluminacaoValor: Number(data.contribuicaoIlumPublica) || 0,
     }
 
     return pdfConvertedData;
