@@ -15,7 +15,7 @@ const app: Express = express();
 //Inicializa a conexao ao banco de dados
 (async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
 
     console.log("Database Inicializado");
   } catch (error) {
@@ -24,6 +24,7 @@ const app: Express = express();
 })();
 
 app.use(router);
+app.use(express.json());
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
