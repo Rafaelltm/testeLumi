@@ -10,6 +10,7 @@ import { channel } from 'diagnostics_channel';
 
 interface IPdfText {
   numCliente: number;
+  numInstalacao: number;
   nomeCliente: string;
   mesReferencia: string;
   anoReferencia: number;
@@ -29,6 +30,7 @@ interface ICreateCliente {
 
 interface ICreateFatura {
   numCliente: number;
+  numInstalacao: number;
   mesReferencia: string;
   anoReferencia: number;
   energiaEletricaQtd: number;
@@ -66,6 +68,7 @@ export class ImportFaturaService {
 
   async handleFatura({
     numCliente,
+    numInstalacao,
     mesReferencia,
     anoReferencia,
     energiaEletricaQtd,
@@ -89,6 +92,7 @@ export class ImportFaturaService {
       if (fatura === null) {
         await Fatura.create({
           numCliente,
+          numInstalacao,
           mesReferencia,
           anoReferencia,
           energiaEletricaQtd,
@@ -167,6 +171,7 @@ export class ImportFaturaService {
     const clienteInstalacaoMatch = pdfText.match(/Nº DO CLIENTE\s+Nº DA INSTALAÇÃO\s+(\d+)\s+(\d+)/);
     if (clienteInstalacaoMatch) {
       data.numeroCliente = clienteInstalacaoMatch[1];
+      data.numeroInstalacao = clienteInstalacaoMatch[2];
     }
 
     const datasReferenciaMatch = pdfText.match(/Referente\sa\s+Vencimento\s+Valor\sa\spagar\s+\(R\$\)\s+(\w+\/\d+)\s+(\d+\/\d+\/\d+)\s+([\d,]+)/);
@@ -181,6 +186,7 @@ export class ImportFaturaService {
 
     const pdfConvertedData: IPdfText = {
       numCliente: Number(data.numeroCliente),
+      numInstalacao: Number(data.numeroInstalacao),
       nomeCliente: data.nomeCliente,
       mesReferencia: data.referencia.split('/')[0],
       anoReferencia: Number(data.referencia.split('/')[1]),

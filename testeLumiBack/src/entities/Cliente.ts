@@ -6,7 +6,7 @@ export class Cliente extends Model {
 
   @PrimaryKey
   @Column(DataType.BIGINT)
-  numCliente: BigInt;
+  numCliente: number;
 
   @AllowNull(false)
   @Column

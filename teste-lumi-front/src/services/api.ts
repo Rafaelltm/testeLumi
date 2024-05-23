@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://localhost:3000",
+  baseURL: "http://localhost:3001",
   maxContentLength: 10000000,
   maxBodyLength: 10000000,
 });

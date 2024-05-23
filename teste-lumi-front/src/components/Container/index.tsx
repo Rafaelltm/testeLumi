@@ -7,7 +7,7 @@ interface IPageProps {
   children: React.ReactNode;
 }
 
-const PageContainer: React.FC<IPageProps> = ({ title, children }) => {
+const Container: React.FC<IPageProps> = ({ title, children }) => {
   return (
     <div className="page-container">
       <div className="page-title">
@@ -20,4 +20,4 @@ const PageContainer: React.FC<IPageProps> = ({ title, children }) => {
   );
 }
 
-export default PageContainer;
+export default Container;

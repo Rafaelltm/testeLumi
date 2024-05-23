@@ -9,6 +9,8 @@
 .page-title {
   font-size: 48px;
   color: #000;
+
+  align-self: center;
 }
 
 .page-content {
@@ -16,4 +18,6 @@
   height: 80%;
 
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
