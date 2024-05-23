@@ -5,6 +5,7 @@ import api from "../../services/api";
 
 import "./styles.css";
 import Base64ToPdfDownloader from "../../components/Base64ToPdfDownloader";
+import Header from "../../components/Header";
 
 interface ICliente {
   numCliente: number;
@@ -116,6 +117,7 @@ const Library = () => {
 
   return (
     <Container title="Biblioteca de Faturas">
+      <Header />
       <div className="splitedDiv">
         <div className="importFatura">
           <Container title="Import de Faturas">
