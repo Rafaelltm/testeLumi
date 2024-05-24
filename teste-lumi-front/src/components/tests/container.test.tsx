@@ -4,7 +4,7 @@ import Container from '../Container';
 
 import "@testing-library/jest-dom";
 
-describe('Container component', () => {
+describe('Container', () => {
   test('renders title and children', () => {
     const title = 'Test Title';
     const content = 'Test Content';

@@ -5,7 +5,7 @@ import Header from '../Header';
 
 import "@testing-library/jest-dom";
 
-describe('Header component', () => {
+describe('Header', () => {
   test('renders header with links', () => {
     render(
       <BrowserRouter>
