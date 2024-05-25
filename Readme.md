@@ -32,6 +32,8 @@
 
 #### Back-end
 
+- Criar o banco de dados PostgreSQL
+
 - Definir as variáveis de embiente em um arquivo `.env` utilizando o `.env.example` como base
 
 - Executar o comando `npm install`
