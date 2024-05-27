@@ -1,0 +1,41 @@
+name: Deploy Front-end to Heroku
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: |
+        cd ./teste-lumi-front
+        npm install --silent
+
+    - name: Run tests
+      run: |
+        cd ./teste-lumi-front 
+        npm run test
+
+    - name: Deploy application
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: ${{ secrets.HEROKU_APP_NAME_FRONT }}
+        heroku_email: rafaelltm10@hotmail.com
+        appDir: ./teste-lumi-front
