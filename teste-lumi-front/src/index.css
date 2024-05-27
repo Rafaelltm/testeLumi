@@ -6,11 +6,12 @@ body,
   padding: 0;
 
   box-sizing: border-box;
+
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: "Reddit Mono", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -25,7 +26,12 @@ code {
 }
 
 #root {
-  --background-color: #a3a3a3;
+  --background-color: #fff;
+  --verde-lumi: #01ff8b;
+  --verde-lumi-1: #c8fbe4;
+  --verde-lumi-2: #015C34;
+  --verde-lumi-3: #02231C;
+  --verde-lumi-hover: #009f58;
   flex: 1;
   display: flex;
   flex-direction: column;

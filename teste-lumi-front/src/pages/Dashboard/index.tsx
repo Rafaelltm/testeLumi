@@ -1,6 +1,8 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import Container from '../../components/Container';
 
+import "./styles.css";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,7 +17,7 @@ import { Bar } from 'react-chartjs-2';
 import api from "../../services/api";
 
 import "./styles.css";
-import Header from '../../components/Header';
+import CustomSelect from '../../components/CustomSelect';
 
 interface ICliente {
   numCliente: number;
@@ -38,6 +40,11 @@ interface IFatura {
   faturaBase64: string;
 }
 
+interface IGraphType {
+  value: string;
+  label: string;
+}
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -52,8 +59,8 @@ const Dashboard = () => {
   const [faturas, setFaturas] = useState<IFatura[]>([]);
   const [clienteSelecionado, setClienteSelecionado] = useState<string>("");
   const [tipoSelecionado, setTipoSelecionado] = useState<string>("");
-  const [isLoadedGraphTypeSelect, setIsLoadedGraphTypeSelect] = useState<Boolean>(false);
   const [isLoadedGraph, setIsLoadedGraph] = useState<Boolean>(false);
+  const [graphTypes, setGraphTypes] = useState<IGraphType[]>([]);
 
   const [graphTitle, setGraphTitle] = useState<string>("Energia (kWh)");
   const [graphLabels, setGraphLabels] = useState<string[]>([]);
@@ -103,6 +110,7 @@ const Dashboard = () => {
     selectedQuantidade: Boolean,
     selectedValor: Boolean,
   ) => {
+    // const labels: string[] = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "SET", "OUT", "NOV", "DEZ"];
     const labels: string[] = [];
     const consumoEnergiaData: number[] = [];
     const energiaCompensadaData: number[] = [];
@@ -118,7 +126,7 @@ const Dashboard = () => {
       valorTotalData.push(Number(fatura.energiaEletricaVlr) + Number(fatura.energiaSCEEEVlr) + Number(fatura.contribuicaoIluminacaoValor));
       economiaGdData.push(Number(fatura.energiaCompensadaVlr));
 
-      labels.push(fatura.mesReferencia);
+      labels.push(`${fatura.mesReferencia} - ${fatura.anoReferencia}`);
     }
 
     const datasets = selectedQuantidade
@@ -126,24 +134,24 @@ const Dashboard = () => {
         {
           label: graphDataSetsNames[0],
           data: consumoEnergiaData,
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          backgroundColor: 'rgba(1, 59, 33, 0.8)',
         },
         {
           label: graphDataSetsNames[1],
           data: energiaCompensadaData,
-          backgroundColor: 'rgba(53, 162, 235, 0.5)',
+          backgroundColor: 'rgba(145, 227, 169, 0.8)',
         },
       ]
       : [
         {
           label: graphDataSetsNames[0],
           data: valorTotalData,
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          backgroundColor: 'rgba(1, 59, 33, 0.8)',
         },
         {
           label: graphDataSetsNames[1],
           data: economiaGdData,
-          backgroundColor: 'rgba(53, 162, 235, 0.5)',
+          backgroundColor: 'rgba(145, 227, 169, 0.8)',
         },
       ];
 
@@ -157,7 +165,7 @@ const Dashboard = () => {
   const handleClienteSelecionadoChange = async (value: string) => {
     try {
       setTipoSelecionado("");
-      setIsLoadedGraphTypeSelect(false);
+      setGraphTypes([]);
       setClienteSelecionado(value);
       setIsLoadedGraph(false);
       if (value !== "") {
@@ -165,7 +173,13 @@ const Dashboard = () => {
 
         if (response.data.length > 0) {
           setFaturas(response.data);
-          setIsLoadedGraphTypeSelect(true);
+          setGraphTypes([{
+            value: "quantidade",
+            label: "Energia (KWh)"
+          }, {
+            value: "valor",
+            label: "Valor Monetário (R$)"
+          }]);
         }
       }
     } catch (err) {
@@ -187,26 +201,39 @@ const Dashboard = () => {
   }, [handleLoadClientes]);
 
   return (
-    <Container title="Dashboard">
-      <Header />
+    <Container title="Dashboard" isMain={true}>
       <div className="graphsDiv">
-        Selecione o cliente do qual se deseja fazer o download da fatura
-        <select value={clienteSelecionado} onChange={(e) => handleClienteSelecionadoChange(e.target.value)}>
-          <option value="">Selecione o cliente</option>
-          {clientes && clientes.map((cliente: ICliente) => (
-            <option key={cliente.numCliente} value={cliente.numCliente}>
-              {cliente.numCliente} - {cliente.nomeCliente}
-            </option>
-          ))}
-        </select>
-        {isLoadedGraphTypeSelect &&
-          <select value={tipoSelecionado} onChange={(e) => handleTipoSelecionadoChange(e.target.value)}>
-            <option value="">Selecione o tipo de gráfico</option>
-            <option value="quantidade">Energia (KWh)</option>
-            <option value="valor">Valor Monetário (R$)</option>
-          </select>
-        }
-        {isLoadedGraph && <Bar options={graphOptions} data={graphData} />}
+        <div className="form-item">
+          <label>
+            1. Selecione o cliente
+          </label>
+          <CustomSelect
+            id="cliente-select"
+            value={clienteSelecionado}
+            onChange={(e) => handleClienteSelecionadoChange(e.target.value)}
+            options={clientes.map((cliente: ICliente) => ({
+              value: cliente.numCliente,
+              label: `${cliente.numCliente} - ${cliente.nomeCliente}`
+            }))}
+          />
+        </div>
+        <div className="form-item">
+          <label>
+            2. Selecione o gráfico que deseja visualizar
+          </label>
+          <CustomSelect
+            id="tipo-grafico-select"
+            value={tipoSelecionado}
+            onChange={(e) => handleTipoSelecionadoChange(e.target.value)}
+            options={graphTypes.map((graphType: IGraphType) => ({
+              value: graphType.value,
+              label: graphType.label,
+            }))}
+          />
+        </div>
+        <div className="barGraphDiv">
+          {isLoadedGraph && <Bar options={graphOptions} data={graphData} />}
+        </div>
       </div>
     </Container>
   );

@@ -5,7 +5,8 @@ import api from "../../services/api";
 
 import "./styles.css";
 import Base64ToPdfDownloader from "../../components/Base64ToPdfDownloader";
-import Header from "../../components/Header";
+import CustomSelect from "../../components/CustomSelect";
+import FileInput from "../../components/FileInput";
 
 interface ICliente {
   numCliente: number;
@@ -34,8 +35,8 @@ const Library = () => {
   const [clienteSelecionado, setClienteSelecionado] = useState<string>("");
   const [faturaSelecionada, setFaturaSelecionada] = useState<string>("");
   const [faturaPdf, setFaturaPdf] = useState<object>({});
-  const [isLoadedFaturaSelect, setIsLoadedFaturaSelect] = useState<Boolean>(false);
-  const [isLoadedDownloadPdfBtn, setIsLoadedDownloadPdfBtn] = useState<Boolean>(false);
+  const [isLoadedDownloadPdfBtn, setIsLoadedDownloadPdfBtn] = useState<boolean>(false);
+  const [isFaturaFileSelected, setIsFaturaFileSelected] = useState<boolean>(false);
   const [base64ToDownload, setBase64ToDownload] = useState<string>("");
   const [fileNameToDownload, setFileNameToDownload] = useState<string>("");
 
@@ -59,15 +60,14 @@ const Library = () => {
   const handleClienteSelecionadoChange = async (value: string) => {
     try {
       setClienteSelecionado(value);
-      setIsLoadedFaturaSelect(false);
       setIsLoadedDownloadPdfBtn(false);
       setFaturaSelecionada("");
+      setFaturas([]);
       if (value !== "") {
         const response = await api.get(`/faturas/cliente/${value}`);
 
         if (response.data.length > 0) {
           setFaturas(response.data);
-          setIsLoadedFaturaSelect(true);
         }
       }
     } catch (err) {
@@ -82,19 +82,22 @@ const Library = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      alert('Pdf enviado com sucesso!');
     } catch (err) {
       console.log(err);
+      alert(err);
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
-
+  const handlePdfFileChange = (file: File) => {
+    setIsFaturaFileSelected(false);
+    if (file.type === 'application/pdf') {
       const formData = new FormData();
       formData.append('file', file);
 
       setFaturaPdf(formData);
+      setIsFaturaFileSelected(true);
     } else {
       alert('Por favor, selecione um arquivo PDF.');
     }
@@ -116,48 +119,51 @@ const Library = () => {
   }, [handleLoadClientes, setClientes]);
 
   return (
-    <Container title="Biblioteca de Faturas">
-      <Header />
+    <Container title="Biblioteca de Faturas" isMain={true}>
       <div className="splitedDiv">
-        <div className="importFatura">
-          <Container title="Import de Faturas">
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
+        <div className="splitedDivPiece importFatura">
+          <Container title="Importar Faturas" isMain={false}>
+            <FileInput
+              id="file-upload"
+              label="Selecionar Arquivo PDF"
+              onFileChange={handlePdfFileChange}
+              style={{ display: 'none' }}
             />
-            <button className="sendPdfBtn" onClick={handleSendPdfFile}>Enviar</button>
+            <button disabled={!isFaturaFileSelected} className="sendPdfBtn" onClick={handleSendPdfFile}>Enviar</button>
           </Container>
         </div>
-        <div className="downloadFatura">
-          <Container title="Download de Faturas">
-            Selecione o cliente do qual se deseja fazer o download da fatura
-            <select value={clienteSelecionado} onChange={(e) => handleClienteSelecionadoChange(e.target.value)}>
-              <option value="">Selecione o cliente</option>
-              {clientes && clientes.map((cliente: ICliente) => {
-                return <option
-                  key={cliente.numCliente}
-                  value={cliente.numCliente}>
-                  {cliente.numCliente} - {cliente.nomeCliente}
-                </option>
-              })}
-            </select>
+        <div className="splitedDivPiece downloadFatura">
+          <Container title="Download de Faturas" isMain={false}>
+            <div className="form-item">
+              <label>
+                1. Selecione o cliente
+              </label>
+              <CustomSelect
+                id="cliente-select"
+                value={clienteSelecionado}
+                onChange={(e) => handleClienteSelecionadoChange(e.target.value)}
+                options={clientes.map((cliente: ICliente) => ({
+                  value: cliente.numCliente,
+                  label: `${cliente.numCliente} - ${cliente.nomeCliente}`
+                }))}
+              />
+            </div>
 
-            {isLoadedFaturaSelect &&
-              <select value={faturaSelecionada} onChange={(e) => handleFaturaSelecionadaChange(e.target.value)}>
-                <option value="">Selecione a fatura</option>
-                {faturas && faturas.map((fatura: IFatura) => {
-                  return <option
-                    key={fatura.id}
-                    value={fatura.id}>
-                    {fatura.mesReferencia}/{fatura.anoReferencia}
-                  </option>
-                })}
-              </select>
-            }
-            {isLoadedDownloadPdfBtn &&
-              <Base64ToPdfDownloader base64String={base64ToDownload} fileName={fileNameToDownload} />
-            }
+            <div className="form-item">
+              <label>
+                2. Selecione o Mês/Ano da fatura
+              </label>
+              <CustomSelect
+                id="fatura-select"
+                value={faturaSelecionada}
+                onChange={(e) => handleFaturaSelecionadaChange(e.target.value)}
+                options={faturas.map((fatura: IFatura) => ({
+                  value: fatura.id,
+                  label: `${fatura.mesReferencia}/${fatura.anoReferencia}`
+                }))}
+              />
+            </div>
+            <Base64ToPdfDownloader btnClassName="sendPdfBtn" base64String={base64ToDownload} fileName={fileNameToDownload} isDisabled={isLoadedDownloadPdfBtn} />
           </Container>
         </div>
       </div>

@@ -11,8 +11,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Library />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/library" element={<Library />} />
     </Routes>
   </BrowserRouter>
 );

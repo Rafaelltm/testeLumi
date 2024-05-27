@@ -9,7 +9,7 @@ describe('Base64ToPdfDownloader', () => {
   test('renders Base64ToPdfDownloader', () => {
     render(
       <BrowserRouter>
-        <Base64ToPdfDownloader base64String='teste' fileName='teste.pdf' />
+        <Base64ToPdfDownloader base64String='teste' fileName='teste.pdf' isDisabled={false} btnClassName='teste' />
       </BrowserRouter>
     );
 

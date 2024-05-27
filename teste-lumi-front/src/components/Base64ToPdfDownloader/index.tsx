@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Base64ToPdfDownloader: React.FC<{ base64String: string, fileName: string }> = ({ base64String, fileName }) => {
+const Base64ToPdfDownloader: React.FC<{ base64String: string, fileName: string, isDisabled: boolean, btnClassName: string }> = ({ base64String, fileName, isDisabled, btnClassName }) => {
   const downloadPdf = () => {
     const byteCharacters = atob(base64String);
     const byteNumbers = new Array(byteCharacters.length);
@@ -23,7 +23,7 @@ const Base64ToPdfDownloader: React.FC<{ base64String: string, fileName: string }
   };
 
   return (
-    <button onClick={downloadPdf}>Download Fatura</button>
+    <button className={btnClassName} disabled={!isDisabled} onClick={downloadPdf}>Download Fatura</button>
   );
 };
 
