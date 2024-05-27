@@ -28,4 +28,6 @@ jobs:
         npm install --silent
 
     - name: Run tests
-      run: npm run test
+      run: |
+        cd ./testeLumiBack 
+        npm run test
