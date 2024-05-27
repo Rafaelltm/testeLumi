@@ -1,0 +1,58 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    # Deploy Front-End
+    - name: Deploy Front-End to Heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME_FRONT }}
+      run: |
+        cd teste-lumi-front
+        npm install
+        npm run build
+        echo "web: serve -s build" > Procfile
+        git init
+        heroku git:remote -a $HEROKU_APP_NAME
+        git add .
+        git commit -am "deploy"
+        git push -f heroku main
+
+    # Deploy Back-End
+    - name: Deploy Back-End to Heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME_BACK }}
+      run: |
+        cd testeLumiBack
+        npm install
+        npm run build
+        echo "web: npm start" > Procfile
+        git init
+        heroku git:remote -a $HEROKU_APP_NAME
+        git add .
+        git commit -am "deploy"
+        git push -f heroku main
