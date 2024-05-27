@@ -11,11 +11,6 @@ jobs:
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-    services:
-      docker:
-        image: docker:19.03.12
-        options: --privileged
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -25,7 +20,12 @@ jobs:
       with:
         node-version: '20'
 
-        # Deploy Back-End
+    - name: Set up Git
+      run: |
+        git config --global user.email "rafaelltm10@hotmail.com"
+        git config --global user.name "Rafaelltm"
+
+    # Deploy Back-End
     - name: Deploy Back-End to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -34,7 +34,7 @@ jobs:
         DB_HOST: ${{ secrets.DB_HOST }}
         DB_USER: ${{ secrets.DB_USER }}
         DB_PASS: ${{ secrets.DB_PASS }}
-        DB_NAME:
+        DB_NAME: ${{ secrets.DB_NAME }}
         NODE_ENV: development
       run: |
         cd testeLumiBack
@@ -42,9 +42,7 @@ jobs:
         npm run build
         echo "web: npm start" > Procfile
         git init
-        git config --global user.email "rafaelltm10@hotmail.com"
-        git config --global user.name "Rafaelltm"
-        heroku git:remote -a $HEROKU_APP_NAME_BACK
+        git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME_BACK }}.git
         git add .
         git commit -am "deploy"
         git push -f heroku main
@@ -54,16 +52,14 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_APP_NAME_FRONT: ${{ secrets.HEROKU_APP_NAME_FRONT }}
-        REACT_APP_API_ADDRESS: 
+        REACT_APP_API_ADDRESS: ${{ secrets.REACT_APP_API_ADDRESS }}
       run: |
         cd teste-lumi-front
         npm install --silent
         npm run build
         echo "web: serve -s build" > Procfile
         git init
-        git config --global user.email "rafaelltm10@hotmail.com"
-        git config --global user.name "Rafaelltm"
-        heroku git:remote -a $HEROKU_APP_NAME_FRONT
+        git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONT }}.git
         git add .
         git commit -am "deploy"
         git push -f heroku main
