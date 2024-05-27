@@ -1,70 +1,30 @@
-name: Deploy to Heroku
+name: Deploy Back-end to Heroku
 
 on:
   push:
     branches:
-      - main
+      -main
 
 jobs:
-  deploy:
+
+  build: 
+
     runs-on: ubuntu-latest
-    env:
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    strategy:
+      matrix:
+        node-version: [20]
+  
+  steps:
+    - uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
       with:
-        node-version: '20'
+        node-version: ${{ matrix.node-version }}
 
-    - name: Authenticate with Heroku
-      run: echo "$HEROKU_API_KEY" | heroku auth:token
+    - name: Install dependencies
+      uses: npm install --silent
 
-    - name: Set up Git
-      run: |
-        git config --global user.email "rafaelltm10@hotmail.com"
-        git config --global user.name "Rafaelltm"
-
-    # Deploy Back-End
-    - name: Deploy Back-End to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME_BACK: ${{ secrets.HEROKU_APP_NAME_BACK }}
-        PORT: 3001
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASS: ${{ secrets.DB_PASS }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        NODE_ENV: development
-      run: |
-        cd testeLumiBack
-        npm install --silent
-        npm run build
-        echo "web: npm start" > Procfile
-        git init
-        git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME_BACK }}.git
-        heroku auth:token
-        git add .
-        git commit -am "deploy"
-        git push -f heroku main
-
-    # Deploy Front-End
-    - name: Deploy Front-End to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME_FRONT: ${{ secrets.HEROKU_APP_NAME_FRONT }}
-        REACT_APP_API_ADDRESS: ${{ secrets.REACT_APP_API_ADDRESS }}
-      run: |
-        cd teste-lumi-front
-        npm install --silent
-        npm run build
-        echo "web: serve -s build" > Procfile
-        git init
-        git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONT }}.git
-        heroku auth:token
-        git add .
-        git commit -am "deploy"
-        git push -f heroku main
+    - name: Run tests
+      uses: npm run test
