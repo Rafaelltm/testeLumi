@@ -42,6 +42,8 @@ jobs:
         npm run build
         echo "web: npm start" > Procfile
         git init
+        git config --global user.email "rafaelltm10@hotmail.com"
+        git config --global user.name "Rafaelltm"
         heroku git:remote -a $HEROKU_APP_NAME
         git add .
         git commit -am "deploy"
@@ -59,6 +61,8 @@ jobs:
         npm run build
         echo "web: serve -s build" > Procfile
         git init
+        git config --global user.email "rafaelltm10@hotmail.com"
+        git config --global user.name "Rafaelltm"
         heroku git:remote -a $HEROKU_APP_NAME
         git add .
         git commit -am "deploy"
