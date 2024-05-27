@@ -213,7 +213,7 @@ const Dashboard = () => {
           <CustomSelect
             id="cliente-select"
             value={clienteSelecionado}
-            onChange={(e) => handleClienteSelecionadoChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleClienteSelecionadoChange(e.target.value)}
             options={clientes.map((cliente: ICliente) => ({
               value: cliente.numCliente,
               label: `${cliente.numCliente} - ${cliente.nomeCliente}`
@@ -227,7 +227,7 @@ const Dashboard = () => {
           <CustomSelect
             id="tipo-grafico-select"
             value={tipoSelecionado}
-            onChange={(e) => handleTipoSelecionadoChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleTipoSelecionadoChange(e.target.value)}
             options={graphTypes.map((graphType: IGraphType) => ({
               value: graphType.value,
               label: graphType.label,

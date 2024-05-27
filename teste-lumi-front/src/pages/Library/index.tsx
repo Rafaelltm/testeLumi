@@ -144,7 +144,7 @@ const Library = () => {
               <CustomSelect
                 id="cliente-select"
                 value={clienteSelecionado}
-                onChange={(e) => handleClienteSelecionadoChange(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleClienteSelecionadoChange(e.target.value)}
                 options={clientes.map((cliente: ICliente) => ({
                   value: cliente.numCliente,
                   label: `${cliente.numCliente} - ${cliente.nomeCliente}`
@@ -159,7 +159,7 @@ const Library = () => {
               <CustomSelect
                 id="fatura-select"
                 value={faturaSelecionada}
-                onChange={(e) => handleFaturaSelecionadaChange(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFaturaSelecionadaChange(e.target.value)}
                 options={faturas.map((fatura: IFatura) => ({
                   value: fatura.id,
                   label: `${fatura.mesReferencia}/${fatura.anoReferencia}`
