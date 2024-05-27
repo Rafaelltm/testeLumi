@@ -7,6 +7,7 @@ import "./styles.css";
 import Base64ToPdfDownloader from "../../components/Base64ToPdfDownloader";
 import CustomSelect from "../../components/CustomSelect";
 import FileInput from "../../components/FileInput";
+import { useLocation } from "react-router-dom";
 
 interface ICliente {
   numCliente: number;
@@ -30,6 +31,8 @@ interface IFatura {
 }
 
 const Library = () => {
+  const location = useLocation();
+
   const [clientes, setClientes] = useState<ICliente[]>([]);
   const [faturas, setFaturas] = useState<IFatura[]>([]);
   const [clienteSelecionado, setClienteSelecionado] = useState<string>("");
@@ -119,7 +122,7 @@ const Library = () => {
   }, [handleLoadClientes, setClientes]);
 
   return (
-    <Container title="Biblioteca de Faturas" isMain={true}>
+    <Container title="Biblioteca de Faturas" isMain={true} path={location.pathname}>
       <div className="splitedDiv">
         <div className="splitedDivPiece importFatura">
           <Container title="Importar Faturas" isMain={false}>

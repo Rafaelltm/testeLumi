@@ -6,13 +6,14 @@ import Header from '../Header';
 interface IPageProps {
   title: string;
   children: React.ReactNode;
-  isMain: Boolean;
+  isMain: boolean;
+  path?: string;
 }
 
-const Container: React.FC<IPageProps> = ({ title, children, isMain }) => {
+const Container: React.FC<IPageProps> = ({ title, children, isMain, path }) => {
   return (
     <div className="page-container">
-      {isMain && <Header />}
+      {isMain && <Header path={path} />}
       <div className={`page-title ${isMain ? 'isMain' : ''}`}>
         <p>{title}</p>
       </div>

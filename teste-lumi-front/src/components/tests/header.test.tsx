@@ -18,18 +18,18 @@ describe('Header', () => {
 
     const bibliotecaLink = screen.getByText('Biblioteca de Faturas');
     expect(bibliotecaLink).toBeInTheDocument();
-    expect(bibliotecaLink).toHaveAttribute('href', '/');
+    expect(bibliotecaLink).toHaveAttribute('href', '/library');
 
     const dashboardLink = screen.getByText('Dashboard');
     expect(dashboardLink).toBeInTheDocument();
-    expect(dashboardLink).toHaveAttribute('href', '/dashboard');
+    expect(dashboardLink).toHaveAttribute('href', '/');
 
     fireEvent.click(dashboardLink);
 
-    expect(window.location.pathname).toBe('/dashboard');
+    expect(window.location.pathname).toBe('/');
 
     fireEvent.click(bibliotecaLink);
 
-    expect(window.location.pathname).toBe('/');
+    expect(window.location.pathname).toBe('/library');
   });
 });

@@ -10,7 +10,7 @@ describe('Container', () => {
     const content = 'Test Content';
 
     render(
-      <Container title={title} isMain={true}>
+      <Container title={title} isMain={false}>
         {content}
       </Container>
     );

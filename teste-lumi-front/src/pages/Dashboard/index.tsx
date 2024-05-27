@@ -18,6 +18,7 @@ import api from "../../services/api";
 
 import "./styles.css";
 import CustomSelect from '../../components/CustomSelect';
+import { useLocation } from 'react-router-dom';
 
 interface ICliente {
   numCliente: number;
@@ -55,6 +56,8 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const location = useLocation();
+
   const [clientes, setClientes] = useState<ICliente[]>([]);
   const [faturas, setFaturas] = useState<IFatura[]>([]);
   const [clienteSelecionado, setClienteSelecionado] = useState<string>("");
@@ -201,7 +204,7 @@ const Dashboard = () => {
   }, [handleLoadClientes]);
 
   return (
-    <Container title="Dashboard" isMain={true}>
+    <Container title="Dashboard" isMain={true} path={location.pathname}>
       <div className="graphsDiv">
         <div className="form-item">
           <label>
