@@ -16,8 +16,6 @@ interface IDbOptions {
 
 dotenv.config();
 
-const isTest = process.env.NODE_ENV === 'test';
-
 const DbOptions: IDbOptions = {
   dialect: 'postgres',
   host: process.env.DB_HOST,
@@ -26,12 +24,30 @@ const DbOptions: IDbOptions = {
   database: process.env.DB_NAME,
 };
 
-const sequelize = new Sequelize(DbOptions.database, DbOptions.username, DbOptions.password, {
-  host: DbOptions.host,
-  dialect: DbOptions.dialect,
-  models: [Cliente, Fatura],
-  query: { raw: true },
-  logging: false,
-});
+let sequelize: Sequelize;
+
+if (process.env.NODE_ENV !== 'development') {
+  sequelize = new Sequelize(DbOptions.database, DbOptions.username, DbOptions.password, {
+    host: DbOptions.host,
+    dialect: DbOptions.dialect,
+    models: [Cliente, Fatura],
+    query: { raw: true },
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  });
+} else {
+  sequelize = new Sequelize(DbOptions.database, DbOptions.username, DbOptions.password, {
+    host: DbOptions.host,
+    dialect: DbOptions.dialect,
+    models: [Cliente, Fatura],
+    query: { raw: true },
+    logging: false,
+  });
+}
 
 export { sequelize };
