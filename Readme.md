@@ -1,6 +1,9 @@
 # TESTE DE PRÁTICO LUMI – DESENVOLVEDOR(A) FULL STACK PLENO(A)
 ###### Rafael Leão Teixeira de Magalhães
 
+##### Endereço do deploy da aplicação: 
+https://teste-lumi-front-ade9fe8129f5.herokuapp.com/
+
 ## Como utilizar a aplicação
 
 ### Utilizando o Docker
