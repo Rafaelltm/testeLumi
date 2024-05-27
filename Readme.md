@@ -1,6 +1,8 @@
 # TESTE DE PRÁTICO LUMI – DESENVOLVEDOR(A) FULL STACK PLENO(A)
 ###### Rafael Leão Teixeira de Magalhães
 
+Atualmente a aplicação tem duas actions que escutam o push na branch main e realizam os testes antes de fazer o deploy no heroku
+
 ##### Endereço do deploy da aplicação: 
 https://teste-lumi-front-ade9fe8129f5.herokuapp.com/
 
