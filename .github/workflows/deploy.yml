@@ -22,11 +22,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Go to the Back-end folder
-      run: cd ./testeLumiBack
-
     - name: Install dependencies
-      run: npm install --silent
+      run: |
+        cd ./testeLumiBack
+        npm install --silent
 
     - name: Run tests
       run: npm run test
