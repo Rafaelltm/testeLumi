@@ -38,7 +38,7 @@ jobs:
         NODE_ENV: development
       run: |
         cd testeLumiBack
-        npm install
+        npm install --silent
         npm run build
         echo "web: npm start" > Procfile
         git init
@@ -57,7 +57,7 @@ jobs:
         REACT_APP_API_ADDRESS: 
       run: |
         cd teste-lumi-front
-        npm install
+        npm install --silent
         npm run build
         echo "web: serve -s build" > Procfile
         git init
