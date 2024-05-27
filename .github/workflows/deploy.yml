@@ -20,6 +20,9 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Authenticate with Heroku
+      run: echo "$HEROKU_API_KEY" | heroku auth:token
+
     - name: Set up Git
       run: |
         git config --global user.email "rafaelltm10@hotmail.com"
@@ -43,6 +46,7 @@ jobs:
         echo "web: npm start" > Procfile
         git init
         git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME_BACK }}.git
+        heroku auth:token
         git add .
         git commit -am "deploy"
         git push -f heroku main
@@ -60,6 +64,7 @@ jobs:
         echo "web: serve -s build" > Procfile
         git init
         git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME_FRONT }}.git
+        heroku auth:token
         git add .
         git commit -am "deploy"
         git push -f heroku main
