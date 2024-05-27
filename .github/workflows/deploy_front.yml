@@ -32,6 +32,11 @@ jobs:
         cd ./teste-lumi-front 
         npm run test
 
+    - name: Install serve
+      run: |
+        cd ./teste-lumi-front 
+        npm install serve --save
+
     - name: Deploy application
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
