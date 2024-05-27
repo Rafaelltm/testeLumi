@@ -29,7 +29,7 @@ jobs:
     - name: Deploy Back-End to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME_BACK }}
+        HEROKU_APP_NAME_BACK: ${{ secrets.HEROKU_APP_NAME_BACK }}
         PORT: 3001
         DB_HOST: ${{ secrets.DB_HOST }}
         DB_USER: ${{ secrets.DB_USER }}
@@ -44,7 +44,7 @@ jobs:
         git init
         git config --global user.email "rafaelltm10@hotmail.com"
         git config --global user.name "Rafaelltm"
-        heroku git:remote -a $HEROKU_APP_NAME
+        heroku git:remote -a $HEROKU_APP_NAME_BACK
         git add .
         git commit -am "deploy"
         git push -f heroku main
@@ -53,7 +53,7 @@ jobs:
     - name: Deploy Front-End to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME_FRONT }}
+        HEROKU_APP_NAME_FRONT: ${{ secrets.HEROKU_APP_NAME_FRONT }}
         REACT_APP_API_ADDRESS: 
       run: |
         cd teste-lumi-front
@@ -63,7 +63,7 @@ jobs:
         git init
         git config --global user.email "rafaelltm10@hotmail.com"
         git config --global user.name "Rafaelltm"
-        heroku git:remote -a $HEROKU_APP_NAME
+        heroku git:remote -a $HEROKU_APP_NAME_FRONT
         git add .
         git commit -am "deploy"
         git push -f heroku main
